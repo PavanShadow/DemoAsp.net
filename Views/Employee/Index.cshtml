@@ -22,11 +22,16 @@
         <td>@Model.Rows[i][5]</td>
         <td>
             <a href="@Url.Action("Edit", "Employee", new { @id=@Model.Rows[i][0]})">Edit</a>
+            <a href="@Url.Action("Delete", "Employee", new { @id=@Model.Rows[i][0]})">Delete</a>
         </td>
+        
     </tr>
     
     }
 </table>
 
 <a href="@Url.Action("Create", "Employee")">Add Employee</a>
+
+<p>Logged User => @Session["loggedUser"] <a href="@Url.Action("Logout", "Login")">Logout</a></p> 
+
 

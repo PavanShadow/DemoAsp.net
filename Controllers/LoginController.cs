@@ -11,11 +11,7 @@ namespace FinalDemo.Controllers
 {
     public class LoginController : Controller
     {
-
-        SqlConnection sqlCon = new SqlConnection();
-        SqlCommand sqlCom = new SqlCommand();
-        SqlDataReader dr;
-
+        string connection = @"Data Source=pavan-pc;Initial Catalog=TestDetails;Integrated Security=True";
 
         [HttpGet]
         public ActionResult Login()
@@ -23,32 +19,42 @@ namespace FinalDemo.Controllers
             return View();
         }
 
-        void connectString()
-        {
-            sqlCon.ConnectionString = "Data Source=pavan-pc;Initial Catalog=TestDetails;Integrated Security=True";
-        }
-
         [HttpPost]
-        public ActionResult Login(Admin adminModel)
+        public ActionResult Login(Admin admin)
         {
-            connectString();
-            sqlCon.Open();
-            sqlCom.Connection = sqlCon;
-            sqlCom.CommandText = "SELECT * FROM Admins WHERE Username='" + adminModel.Username + "' AND Password='" + adminModel.Password + "'";
-            //sqlCom.CommandText = "UPDATE Admins SET Status ='1' WHERE Username='" + adminModel.Username + "' AND Password='" + adminModel.Password + "'";
-            dr = sqlCom.ExecuteReader();
-            if (dr.Read())
+            
+            DataTable tblAdmin = new DataTable();
+            using (SqlConnection sqlCon = new SqlConnection(connection))
             {
-                sqlCon.Close();
-                return RedirectToAction("Create", "Employee");
+                sqlCon.Open();
+                string query = "SELECT * FROM Admins WHERE Username = '"+admin.Username+"' AND Password = '"+admin.Password+"' ";
+                SqlDataAdapter sqlData = new SqlDataAdapter(query, sqlCon);
+                sqlData.Fill(tblAdmin);
+            }
+            if (tblAdmin.Rows.Count > 0)
+            {
+                Session["loggedId"] = tblAdmin.Rows[0][0].ToString();
+                Session["loggedUser"] = tblAdmin.Rows[0][1].ToString();
+                return RedirectToAction("Index", "Employee");
             }
             else
             {
-                sqlCon.Close();
                 return View();
             }
-
             
         }
+
+        public ActionResult Logout()
+        {
+            Session.Abandon();
+            return RedirectToAction("Login");
+        }
+
+        
+
+        
+            //sqlCom.CommandText = "SELECT * FROM Admins WHERE Username='" + adminModel.Username + "' AND Password='" + adminModel.Password + "'";
+            //sqlCom.CommandText = "UPDATE Admins SET Status ='1' WHERE Username='" + adminModel.Username + "' AND Password='" + adminModel.Password + "'";
+            
     }
 }

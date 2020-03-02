@@ -107,23 +107,18 @@ namespace FinalDemo.Controllers
         // GET: Employee/Delete/5
         public ActionResult Delete(int id)
         {
-            return View();
+            using (SqlConnection sqlCon = new SqlConnection(connection))
+            {
+                sqlCon.Open();
+                string query3 = "DELETE FROM Employee WHERE EmployeeId=@EmployeeId";
+                SqlCommand sqlCmd = new SqlCommand(query3, sqlCon);
+                sqlCmd.Parameters.AddWithValue("@EmployeeId", id);
+                sqlCmd.ExecuteNonQuery();
+
+            }
+            return RedirectToAction("Index");
         }
 
-        // POST: Employee/Delete/5
-        [HttpPost]
-        public ActionResult Delete(int id, FormCollection collection)
-        {
-            try
-            {
-                // TODO: Add delete logic here
-
-                return RedirectToAction("Index");
-            }
-            catch
-            {
-                return View();
-            }
-        }
+        
     }
 }
