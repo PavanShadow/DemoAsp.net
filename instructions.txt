@@ -1,0 +1,12 @@
+new project -> web -> Asp.net web app->(Then name app)->MVC
+
+Databases->New db->(name db)->Tables->add columns->save(pk cannot allow nulls)
+In properties identiti specification change to-> Yes
+tools->options->designers->uncheck prevent save option
+
+first create controller(read/write)
+then add view for first time it should be index main page
+add class to model
+inside operation right click and add view select corresponding from dropdowns
+
+simple cal yutube -> https://www.youtube.com/watch?v=_UDJSTZBkfQ

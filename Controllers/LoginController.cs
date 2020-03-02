@@ -35,6 +35,16 @@ namespace FinalDemo.Controllers
             {
                 Session["loggedId"] = tblAdmin.Rows[0][0].ToString();
                 Session["loggedUser"] = tblAdmin.Rows[0][1].ToString();
+
+                using (SqlConnection sqlCon = new SqlConnection(connection))
+                {
+                    sqlCon.Open();
+                    string queryUp = "UPDATE Admins SET Status=1 WHERE AdminId='"+Session["loggedId"]+"' ";
+                    SqlDataAdapter sqlDataUp = new SqlDataAdapter(queryUp, sqlCon);
+                    sqlDataUp.Fill(tblAdmin);
+                }
+
+                
                 return RedirectToAction("Index", "Employee");
             }
             else
@@ -44,17 +54,23 @@ namespace FinalDemo.Controllers
             
         }
 
+
+
         public ActionResult Logout()
         {
+            DataTable tblAdmin = new DataTable();
+            using (SqlConnection sqlCon = new SqlConnection(connection))
+            {
+                sqlCon.Open();
+                string queryLog = "UPDATE Admins SET Status=0 WHERE AdminId='"+Session["loggedId"]+"' ";
+                SqlDataAdapter sqlDataLog = new SqlDataAdapter(queryLog, sqlCon);
+                sqlDataLog.Fill(tblAdmin);
+            }
+
             Session.Abandon();
             return RedirectToAction("Login");
         }
 
-        
-
-        
-            //sqlCom.CommandText = "SELECT * FROM Admins WHERE Username='" + adminModel.Username + "' AND Password='" + adminModel.Password + "'";
-            //sqlCom.CommandText = "UPDATE Admins SET Status ='1' WHERE Username='" + adminModel.Username + "' AND Password='" + adminModel.Password + "'";
             
     }
 }
